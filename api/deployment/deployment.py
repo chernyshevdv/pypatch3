@@ -63,7 +63,7 @@ def update():
     m_deployment_data = {'title': m_title}
     
     COLUMNS_BODY = ""
-    for m_column in ['excel_columns', 'excel_header_rows']:
+    for m_column in ['excel_columns', 'excel_header_row']:
         if request.json.get(m_column):
             COLUMNS_BODY += f", {m_column}=:{m_column}"
             m_deployment_data[m_column] = request.json.get(m_column)
