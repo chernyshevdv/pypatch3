@@ -5,6 +5,22 @@
 - User authentication (authN) and authorization (authZ) is performed in web frontend. API services are auth-free.
 - Due to the decision above, API should not be exposed outside container network
 - Maria DB with MyISAM engine is to be used as datasource, as it's an open source product. Previous version (pypatch2) utilized SQLite as datasource, but with introduction of microservices, we need a server to serve concurrent connections.
+- Every module in API has its own directory to contain its own `Dockerfile`
+- `venv` dir resides in `pypatch3` dir, launch `vscode` there.
+## Directory structure
+```
+pypatch3
+  +- api
+     +- deployment
+        -- Dockerfile
+     +- user
+        -- Dockerfile
+  +- web
+        -- Dockerfile
+  +- venv
+  -- docker-compose.yml
+  -- requirements.txt
+```
 ## API modules
 ### ad
 
