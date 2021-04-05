@@ -86,6 +86,28 @@ def update():
     except sqlite3.Error as m_error:
         return jsonify(success=False, error=m_error)
 
+@deployment.route('/deployment', methods=['DELETE'])
+def delete():
+    if not request.json:
+        return jsonify(success=False, error="No JSON found in the request"), 501
+    m_id = request.json.get('id')
+    if m_id is None:
+        return jsonify(success=False, error="JSON format is incorrect: no id and/or title"), 502
+    
+    m_sql = "DELETE FROM deployment WHERE id=:id"
+    try:
+        m_conn = get_db()
+        m_cursor = m_conn.cursor()
+        m_cursor.execute(m_sql, {'id': m_id})
+        m_conn.commit()
+        m_rows_updated = m_cursor.rowcount
+        if m_rows_updated != 1:
+            return jsonify(success=False, error=f"{m_rows_updated} rows deteled instead of 1"), 404
+        else:
+            return jsonify(success=True, id=m_id)
+    except sqlite3.Error as m_error:
+        return jsonify(success=False, error=m_error)
+
 
 if __name__ == "__main__":
     deployment.run(
