@@ -1,6 +1,6 @@
 FROM python:3.8-slim
 WORKDIR /code
-COPY ../requirements.txt .
+COPY requirements.txt .
 RUN apt-get install sqlite3
 RUN pip install -r requirements.txt
 COPY deployment.py .
