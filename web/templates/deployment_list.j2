@@ -1,0 +1,5 @@
+<ul>
+{% for row in obj['deployments'] %}
+    <li><a href="/deployment/{{row['id']}}">{{row['title']}}</a>
+{% endfor %}
+</ul>

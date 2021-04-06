@@ -1,0 +1,16 @@
+<h1>Deployment</h1>
+<form action="/deployment/update" method="POST">
+    <label for="id">id: {{obj.deployment.id}}</label>
+    <input type="hidden" name="id" id="id" value="{{obj.deployment.id}}"/>
+
+    <label for="title">title:</label>
+    <input type="text" name="title" id="title" value="{{obj.deployment.title}}"/>
+
+    <label for="excel_columns">excel columns:</label>
+    <input name="excel_columns" id="excel_columns" type="text" placeholder="Example: A,C,F-G" value="{{obj.deployment.excel_columns}}"/>
+
+    <label for="excel_header_row">row number for header:</label>
+    <input name="excel_header_row" id="excel_header_row" type="text" value="{{obj.deployment.excel_header_row}}">
+
+    <input type="submit"/>
+</form>
