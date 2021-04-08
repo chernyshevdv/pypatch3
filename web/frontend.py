@@ -8,9 +8,10 @@ JSON_HEADERS = {"Content-type": "application/json"}
 DEPLOYMENT_HOST = os.environ.get("DEPLOYMENT_HOST", "localhost")
 DEPLOYMENT_PORT = os.environ.get("DEPLOYMENT_PORT", "5000")
 DEPLOYMENT_URL_BASE = f"http://{DEPLOYMENT_HOST}:{DEPLOYMENT_PORT}"
-DEPLOYMENT_URL_CREATE = f"{DEPLOYMENT_URL_BASE}/deployment"
-DEPLOYMENT_URL_UPDATE = DEPLOYMENT_URL_CREATE
-DEPLOYMENT_URL_LIST = f"{DEPLOYMENT_URL_BASE}/deployment/list"
+DEPLOYMENT_URL_CREATE = f"{DEPLOYMENT_URL_BASE}/deployments"
+DEPLOYMENT_URL_UPDATE = f"{DEPLOYMENT_URL_BASE}/deployment"
+DEPLOYMENT_URL_LIST = f"{DEPLOYMENT_URL_BASE}/deployments"
+DEPLOYMENT_URL_DELETE = DEPLOYMENT_URL_UPDATE
 
 frontend = Flask(__name__)
 
@@ -27,9 +28,7 @@ def deployment_create():
     l_data = {}
     for key in ['title', 'excel_columns', 'excel_header_row']:
         l_data[key] = request.form[key]
-    l_data_json = json.dumps(l_data)
-    print(f"JSON data: {l_data_json}")
-    l_creation_response = requests.put(DEPLOYMENT_URL_CREATE, json=l_data_json, headers=JSON_HEADERS)
+    l_creation_response = requests.post(DEPLOYMENT_URL_CREATE, data=l_data)
     l_resp_json = l_creation_response.json()
     l_id = l_resp_json['id']
 
@@ -40,7 +39,7 @@ def deployment_create():
 def show_deployment_view(id):
     l_url = f"{DEPLOYMENT_URL_BASE}/deployment/{id}"
     l_api_response = requests.get(l_url)
-    
+        
     return render_template('view_deployment.j2', obj=l_api_response.json())
 
 @frontend.route("/deployment/edit/<id>", methods=['GET'])
@@ -53,22 +52,21 @@ def show_deployment_form(id):
 @frontend.route("/deployment/update", methods=['POST'])
 def update_deployment():
     l_data = {}
-    for key in ['id', 'title', 'excel_columns', 'excel_header_row']:
+    m_id = request.form['id']
+    for key in ['title', 'excel_columns', 'excel_header_row']:
         l_data[key] = request.form[key]
-    l_data_json = json.dumps(l_data)
-    print(f"Going to send the following JSON: {l_data_json}")
-    l_update_response = requests.post(DEPLOYMENT_URL_UPDATE, json=l_data_json, headers=JSON_HEADERS)
-    l_resp_json = l_update_response.json()
-    print(l_resp_json)
-    if l_resp_json['success']:
-        l_id = l_resp_json['id']
-        return redirect(f"/deployment/{l_id}")
+    l_update_response = requests.put(f"{DEPLOYMENT_URL_UPDATE}/{m_id}", data=l_data)
+    print(l_update_response.text)
+    if l_update_response.status_code == 200:
+        return redirect(f"/deployment/{m_id}")
     else:
-        return f"Error {l_resp_json['error']}"    
+        return f"Error {l_update_response.text}"    
 
-@frontend.route("/deployment/delete/<id>", methods=['POST'])
-def delete_deployment():
-    pass
+@frontend.route("/deployment/delete/<id>", methods=['GET'])
+def delete_deployment(id):
+    l_resp = requests.delete(f"{DEPLOYMENT_URL_DELETE}/{id}")
+    print(f"Response: {l_resp.text}")
+    return redirect('/deployment/list')
 
 @frontend.route("/deployment/list", methods=['GET'])
 def list_deployments():

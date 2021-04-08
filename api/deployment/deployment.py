@@ -1,6 +1,8 @@
 import sqlite3, os
-from flask import Flask, g
+from flask import Flask, g, request
+from flask.helpers import get_flashed_messages
 from flask_restful import Resource, Api, reqparse, abort
+from werkzeug.exceptions import BadRequest
 
 app = Flask(__name__)
 api = Api(app)
@@ -39,7 +41,7 @@ class Deployment(Resource):
 
     def put(self, id):
         "Update an existing deployment"
-        m_args = dep_parser.parse_args(strict=True)
+        m_args = dep_parser.parse_args()
         m_sql = """
                     UPDATE deployment 
                     SET title=:title, 

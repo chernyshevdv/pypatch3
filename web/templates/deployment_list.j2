@@ -1,5 +1,9 @@
 <ul>
-{% for row in obj['deployments'] %}
-    <li><a href="/deployment/{{row['id']}}">{{row['title']}}</a>
+{% for row in obj %}
+    <li><a href="/deployment/{{row['id']}}">{{row['title']}}</a> 
+    <a href="/deployment/edit/{{row['id']}}">edit</a> | 
+    <a href="/deployment/delete/{{row['id']}}">delete</a>
 {% endfor %}
 </ul>
+<hr/>
+<a href="/deployment/new">create new</a>
